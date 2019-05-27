@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import * as firebase from 'firebase';
+import { connect } from 'react-redux';
+import { BloodBankActions } from './store/action/bloodbankaction';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Radio from '@material-ui/core/Radio';
@@ -12,7 +13,6 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import './config/firebaseconfig';
 
 
 const styles = theme => ({
@@ -54,27 +54,21 @@ class ReceiverInfo extends Component {
     this.state = {
       value: 'A+',
       data: [],
-
     };
-    this.ref = firebase.database().ref();
   }
 
 
   handleChange = event => {
     this.setState({ value: event.target.value });
   };
-
+                  
 
   getData = () => {
 
-    this.ref.child('users').orderByChild('bloodgroup').equalTo(this.state.value).on('value', snapshot => {
-        const obj = snapshot.val();
-        const data = [];
-        for (let key in obj) {
-          data.push(obj[key]);
-        }
-        this.setState({ data: data });
-      });
+    let data = {
+      value : this.state.value,
+    }
+    this.props.getdonordata(data);
 
   };
 
@@ -122,7 +116,7 @@ class ReceiverInfo extends Component {
           </TableRow>
         </TableHead>
         <TableBody>
-          {this.state.data.map(value => {
+          {this.props.donordata ? this.props.donordata.map(value => {
             return (
               <TableRow key={value.id}>
                 <TableCell component="th" scope="row">
@@ -134,7 +128,7 @@ class ReceiverInfo extends Component {
                 <TableCell>{value.gender}</TableCell>
               </TableRow>
             );
-          })}
+          }) : null}
         </TableBody>
       </Table>
 
@@ -143,4 +137,22 @@ class ReceiverInfo extends Component {
   }
 }
 
-export default withStyles(styles)(ReceiverInfo);
+const mapStateToProps = state => {
+  return {
+
+    donordata: state.BloodBankReducer.donordata,
+  }
+
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getdonordata: (data) => dispatch(BloodBankActions.getdonordata(data)),
+    // signout: () => { dispatch(CampusActions.signout()) }
+
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(ReceiverInfo));
+

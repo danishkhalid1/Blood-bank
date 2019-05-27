@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import * as firebase from 'firebase';
+import { connect } from 'react-redux';
+import { BloodBankActions } from './store/action/bloodbankaction';
 import { Link } from "react-router-dom";
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
@@ -7,7 +8,6 @@ import MenuItem from '@material-ui/core/MenuItem';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import './config/firebaseconfig';
 
 const ranges = [
   {
@@ -30,47 +30,22 @@ class Register extends Component {
       number: '',
       bloodgroup: '',
       gender: '',
-      data: []
     };
-    this.ref = firebase.database().ref();
   }
 
 
   signup = () => {
 
-    let emal = this.state.email;
-    let pass = this.state.password;
-
-    firebase.auth().createUserWithEmailAndPassword(emal, pass)
-      .then((res) => {
-        console.log(res);
-        if (res) {
-
-          this.ref.child('users').child(res.user.uid).set({
-            username: this.state.username,
-            email: this.state.email,
-            number: this.state.number,
-            bloodgroup: this.state.bloodgroup,
-            gender: this.state.gender
-          });
-
-          localStorage.setItem("User", JSON.stringify(res.user.uid));
-          this.props.history.push('/donors');
-
-        }
-      })
-      .catch((e) => {
-        console.log("error", e);
-        switch (e.code) {
-          case 'auth/weak-password':
-            alert(e.message)
-            break;
-          case 'auth/email-already-in-use':
-            alert(e.message)
-            break;
-          default: alert("Not Found")
-        }
-      })
+    let data = {
+      username : this.state.username,
+      pass: this.state.password,
+      email: this.state.email,
+      number: this.state.number,
+      bloodgroup: this.state.bloodgroup,
+      gender: this.state.gender,
+    }
+    this.props.signup(data);
+    
   }
 
   handleChange1 = event => {
@@ -89,7 +64,7 @@ class Register extends Component {
     const { classes } = this.props;
     return (
       <div className={this.root}>
-        <Typography className={classNames(classes.Register)}> Register</Typography>
+        <Typography variant="body1" gutterBottom className={classNames(classes.Register)}> Register</Typography>
         <TextField
           id="username"
           label="UserName"
@@ -170,7 +145,7 @@ class Register extends Component {
         <Button variant="contained" color="secondary" className={classes.textboxes} onClick={this.signup}>
           Submit
       </Button>
-        <Typography className={classNames(classes.regtrText)}> Already have an account?
+        <Typography variant="body1" gutterBottom className={classNames(classes.regtrText)}> Already have an account?
       <Link to="/login" className={classNames(classes.navLinks)}>Sign in</Link>
         </Typography>
       </div>
@@ -212,4 +187,18 @@ const styles = createMuiTheme => ({
 });
 window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
 
-export default withStyles(styles)(Register);
+
+const mapStateToProps = state => {
+  return {
+    errorsignup: state.BloodBankReducer.errorsignup,
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    signup: (data) => dispatch(BloodBankActions.signup(data))
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Register));

@@ -61,7 +61,7 @@ class Home extends Component {
             </Grid>
             <Grid item xs={6}>
 
-              <Typography className={classNames(classes.paper)}>
+              <Typography gutterBottom variant="body1" className={classNames(classes.paper)}>
                 <Typography component={'span'} variant="h5" gutterBottom className={classes.headingText}>
                   Find blood donors
                 </Typography>
@@ -77,7 +77,7 @@ class Home extends Component {
       {/* 2 Img */}
             <Grid item xs={6}>
 
-              <Typography className={classNames(classes.homeText)}>
+              <Typography gutterBottom variant="body1" className={classNames(classes.homeText)}>
                 <Typography component={'span'} variant="h5" gutterBottom className={classNames(classes.headingText)}>
                   Find blood Receiver
                 </Typography>
@@ -100,7 +100,7 @@ class Home extends Component {
               <img className={classes.homeImg} src={Img2} alt=""/>
             </Grid>
             <Grid item xs={6}>
-              <Typography className={classNames(classes.homeText)}>
+              <Typography gutterBottom variant="body1" className={classNames(classes.homeText)}>
                 <Typography component={'span'} variant="h5" gutterBottom className={classNames(classes.headingText)}>
                   Eliminating obstacles in emergencies
                 </Typography>
@@ -114,7 +114,7 @@ class Home extends Component {
       {/* 4 Img */}
 
             <Grid item xs={6}>
-              <Typography className={classes.homeText}>
+              <Typography gutterBottom variant="body1" className={classes.homeText}>
                 <Typography component={'span'} variant="h5" gutterBottom className={classNames(classes.headingText)}>
                   What could you do?
                 </Typography>
